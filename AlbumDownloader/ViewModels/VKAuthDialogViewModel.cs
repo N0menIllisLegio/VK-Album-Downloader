@@ -6,7 +6,7 @@ using Prism.Services.Dialogs;
 
 namespace AlbumDownloader.ViewModels
 {
-  public class VKAuthDialogViewModel : BindableBase, IDialogAware
+  internal class VKAuthDialogViewModel : BindableBase, IDialogAware
   {
     private static Regex _authSuccessRegex = new (@"access_token=(.+)&(?:.*?)expires_in=(.+)&", RegexOptions.Compiled);
     private static Regex _authFailureRegex = new (@"error=(.+)&(?:.*?)error_description=(.+)&", RegexOptions.Compiled);
@@ -73,8 +73,8 @@ namespace AlbumDownloader.ViewModels
 
     public void OnDialogOpened(IDialogParameters parameters)
     {
-      string appId = Settings.AppID;
-      string vkApiVersion = Settings.ApiVersion;
+      string appId = parameters.GetValue<string>(nameof(Settings.AppID));
+      string vkApiVersion = parameters.GetValue<string>(nameof(Settings.ApiVersion));
 
       AuthUrl = $"https://oauth.vk.com/authorize?client_id={appId}&display=page&redirect_uri={_redirectUrl}&scope=photos&response_type=token&v={vkApiVersion}";
     }

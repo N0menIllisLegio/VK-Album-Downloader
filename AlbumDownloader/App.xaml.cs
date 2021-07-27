@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Windows;
+using AlbumDownloader.Services;
 using AlbumDownloader.ViewModels;
 using AlbumDownloader.Views;
 using Prism.Ioc;
@@ -19,6 +20,9 @@ namespace AlbumDownloader
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
+      containerRegistry.RegisterSingleton<Settings>();
+      containerRegistry.RegisterSingleton<VKApiRequestProvider>();
+
       containerRegistry.RegisterDialog<VKAuthDialog, VKAuthDialogViewModel>(nameof(VKAuthDialog));
 
       containerRegistry.RegisterForNavigation<LoginPage>(nameof(LoginPage));
@@ -29,8 +33,10 @@ namespace AlbumDownloader
     {
       base.OnInitialized();
 
-      Settings.ApiVersion = ConfigurationManager.AppSettings.Get("VKApiVersion");
-      Settings.AppID = ConfigurationManager.AppSettings.Get("AppID");
+      var settings = Container.Resolve<Settings>();
+
+      settings.ApiVersion = ConfigurationManager.AppSettings.Get("VKApiVersion");
+      settings.AppID = ConfigurationManager.AppSettings.Get("AppID");
 
       Container.Resolve<IRegionManager>().RequestNavigate(Settings.MainRegion, nameof(LoginPage));
     }
