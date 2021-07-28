@@ -3,11 +3,11 @@
 namespace AlbumDownloader.Views
 {
   /// <summary>
-  /// Interaction logic for AlbumnsPage
+  /// Interaction logic for MainPage
   /// </summary>
-  public partial class AlbumnsPage : UserControl
+  public partial class MainPage : UserControl
   {
-    public AlbumnsPage()
+    public MainPage()
     {
       InitializeComponent();
     }

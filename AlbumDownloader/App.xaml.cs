@@ -29,7 +29,8 @@ namespace AlbumDownloader
       containerRegistry.RegisterDialog<OKDialog, OKDialogViewModel>(nameof(OKDialog));
 
       containerRegistry.RegisterForNavigation<LoginPage>(nameof(LoginPage));
-      containerRegistry.RegisterForNavigation<AlbumnsPage>(nameof(AlbumnsPage));
+      containerRegistry.RegisterForNavigation<MainPage>(nameof(MainPage));
+      containerRegistry.RegisterForNavigation<AlbumsPage>(nameof(AlbumsPage));
     }
 
     protected override void OnInitialized()

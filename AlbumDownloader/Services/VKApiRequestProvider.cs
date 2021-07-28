@@ -44,6 +44,26 @@ namespace AlbumDownloader.Services
       return profileInfo;
     }
 
+    public async Task<List<AlbumModel>> GetAlbums()
+    {
+      var requestUri = BuildRelativeUri("photos.getAlbums", new Dictionary<string, string>
+      {
+        { "owner_id", _settings.ProfileInfo.ID.ToString() },
+        { "need_system", "1" },
+        { "need_covers", "1" }
+      });
+
+      var request = new HttpRequestMessage
+      {
+        Method = HttpMethod.Get,
+        RequestUri = requestUri
+      };
+
+      var albumsWrapper = await SendRequest<AlbumsListModel>(request);
+
+      return albumsWrapper.Albums;
+    }
+
     public void Dispose()
     {
       Dispose(disposing: true);

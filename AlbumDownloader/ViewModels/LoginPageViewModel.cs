@@ -42,7 +42,7 @@ namespace AlbumDownloader.ViewModels
 
       if (authorizationResult.Success)
       {
-        _regionManager.RequestNavigate(Settings.MainRegion, nameof(AlbumnsPage));
+        _regionManager.RequestNavigate(Settings.MainRegion, nameof(MainPage));
       }
       else
       {
