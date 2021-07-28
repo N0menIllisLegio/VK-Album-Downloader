@@ -22,8 +22,11 @@ namespace AlbumDownloader
     {
       containerRegistry.RegisterSingleton<Settings>();
       containerRegistry.RegisterSingleton<VKApiRequestProvider>();
+      containerRegistry.Register<DialogService>();
+      containerRegistry.Register<AccountService>();
 
       containerRegistry.RegisterDialog<VKAuthDialog, VKAuthDialogViewModel>(nameof(VKAuthDialog));
+      containerRegistry.RegisterDialog<OKDialog, OKDialogViewModel>(nameof(OKDialog));
 
       containerRegistry.RegisterForNavigation<LoginPage>(nameof(LoginPage));
       containerRegistry.RegisterForNavigation<AlbumnsPage>(nameof(AlbumnsPage));
