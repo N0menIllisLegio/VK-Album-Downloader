@@ -12,11 +12,13 @@ namespace AlbumDownloader.Services
   {
     private readonly HttpClient _httpClient;
     private readonly Settings _settings;
+    private readonly DialogService _dialogService;
     private bool _disposed = false;
 
-    public VKApiRequestProvider(Settings settings)
+    public VKApiRequestProvider(Settings settings, DialogService dialogService)
     {
       _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+      _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
       _httpClient = new HttpClient
       {
@@ -29,7 +31,7 @@ namespace AlbumDownloader.Services
       Dispose(disposing: false);
     }
 
-    public async Task<int> GetProfileID()
+    public async Task<ProfileInfoModel> GetProfileInfo()
     {
       var request = new HttpRequestMessage
       {
@@ -37,9 +39,9 @@ namespace AlbumDownloader.Services
         RequestUri = BuildRelativeUri("account.getProfileInfo")
       };
 
-      var result = await SendRequest<ProfileInfoModel>(request);
+      var profileInfo = await SendRequest<ProfileInfoModel>(request);
 
-      return result.ID;
+      return profileInfo;
     }
 
     public void Dispose()
@@ -64,13 +66,40 @@ namespace AlbumDownloader.Services
     private async Task<TResult> SendRequest<TResult>(HttpRequestMessage httpRequest)
       where TResult: class
     {
+      if (_settings.TokenExpirationTime.AddSeconds(-10) <= DateTimeOffset.Now)
+      {
+        await _dialogService.ShowOkDialog(AppResources.ErrorTitleString, AppResources.TokenExpiredErrorString);
+
+        return null;
+      }
+
       var response = await _httpClient.SendAsync(httpRequest);
 
-      response.EnsureSuccessStatusCode();
+      try
+      {
+        response.EnsureSuccessStatusCode();
+      }
+      catch (HttpRequestException exception)
+      {
+        await _dialogService.ShowOkDialog(AppResources.ErrorTitleString,
+          String.Format(AppResources.RequestFailedErrorString, exception.Message));
+
+        return null;
+      }
 
       string content = await response.Content.ReadAsStringAsync();
 
-      return JsonSerializer.Deserialize<ResponseWrapper<TResult>>(content).Response;
+      try
+      {
+        return JsonSerializer.Deserialize<ResponseWrapper<TResult>>(content).Response;
+      }
+      catch (JsonException)
+      {
+        await _dialogService.ShowOkDialog(AppResources.ErrorTitleString,
+          AppResources.ResponseDeserializationFailedErrorString);
+
+        return null;
+      }
     }
 
     private Uri BuildRelativeUri(string methodName, Dictionary<string, string> queryParameters = null)

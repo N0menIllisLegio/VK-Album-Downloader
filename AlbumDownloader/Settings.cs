@@ -1,4 +1,5 @@
 ﻿using System;
+using AlbumDownloader.Models.ApiSchema;
 
 namespace AlbumDownloader
 {
@@ -10,6 +11,6 @@ namespace AlbumDownloader
     public string ApiVersion { get; set; }
     public string Token { get; set; }
     public DateTimeOffset TokenExpirationTime { get; set; }
-    public int ClientID { get; set; }
+    public ProfileInfoModel ProfileInfo { get; set; }
   }
 }
