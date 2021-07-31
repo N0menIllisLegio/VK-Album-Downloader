@@ -5,20 +5,28 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Json;
 using AlbumDownloader.Models.ApiSchema;
+using System.Threading;
+using System.Text.Json.Serialization;
 
 namespace AlbumDownloader.Services
 {
+  // TODO handle null results eg errors
   internal class VKApiRequestProvider: IDisposable
   {
     private readonly HttpClient _httpClient;
     private readonly Settings _settings;
     private readonly DialogService _dialogService;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
+
     private bool _disposed = false;
 
     public VKApiRequestProvider(Settings settings, DialogService dialogService)
     {
       _settings = settings ?? throw new ArgumentNullException(nameof(settings));
       _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+
+      _jsonSerializerOptions = new JsonSerializerOptions();
+      _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 
       _httpClient = new HttpClient
       {
@@ -61,7 +69,29 @@ namespace AlbumDownloader.Services
 
       var albumsWrapper = await SendRequest<AlbumsListModel>(request);
 
-      return albumsWrapper.Albums;
+      return albumsWrapper?.Albums;
+    }
+
+    public async Task<List<PhotoModel>> GetAlbumPhotosBatch(int albumID, int offset)
+    {
+      var requestUri = BuildRelativeUri("photos.get", new Dictionary<string, string>
+      {
+        { "owner_id", _settings.ProfileInfo.ID.ToString() },
+        { "album_id", albumID.ToString() },
+        { "offset", offset.ToString() },
+        { "count", _settings.ImagesBatchSize.ToString() },
+        { "photo_sizes", "1" }
+      });
+
+      var request = new HttpRequestMessage
+      {
+        Method = HttpMethod.Get,
+        RequestUri = requestUri
+      };
+
+      var result = await SendRequest<PhotosListModel>(request, silent: true);
+
+      return result?.Photos;
     }
 
     public void Dispose()
@@ -83,7 +113,7 @@ namespace AlbumDownloader.Services
       }
     }
 
-    private async Task<TResult> SendRequest<TResult>(HttpRequestMessage httpRequest)
+    private async Task<TResult> SendRequest<TResult>(HttpRequestMessage httpRequest, bool silent = false)
       where TResult: class
     {
       if (_settings.TokenExpirationTime.AddSeconds(-10) <= DateTimeOffset.Now)
@@ -93,7 +123,23 @@ namespace AlbumDownloader.Services
         return null;
       }
 
-      var response = await _httpClient.SendAsync(httpRequest);
+      var cancellationTokenSource = new CancellationTokenSource(Settings.SendRequestCancellationTimeoutSeconds * 1000);
+      HttpResponseMessage response;
+
+      try
+      {
+        response = await _httpClient.SendAsync(httpRequest, cancellationTokenSource.Token);
+      }
+      catch(OperationCanceledException)
+      {
+        if (!silent)
+        {
+          await _dialogService.ShowOkDialog(AppResources.ErrorTitleString,
+            String.Format(AppResources.RequestCanceledErrorString, Settings.SendRequestCancellationTimeoutSeconds));
+        }
+
+        return null;
+      }
 
       try
       {
@@ -101,8 +147,11 @@ namespace AlbumDownloader.Services
       }
       catch (HttpRequestException exception)
       {
-        await _dialogService.ShowOkDialog(AppResources.ErrorTitleString,
-          String.Format(AppResources.RequestFailedErrorString, exception.Message));
+        if (!silent)
+        {
+          await _dialogService.ShowOkDialog(AppResources.ErrorTitleString,
+            String.Format(AppResources.RequestFailedErrorString, exception.Message));
+        }
 
         return null;
       }
@@ -111,12 +160,15 @@ namespace AlbumDownloader.Services
 
       try
       {
-        return JsonSerializer.Deserialize<ResponseWrapper<TResult>>(content).Response;
+        return JsonSerializer.Deserialize<ResponseWrapper<TResult>>(content, _jsonSerializerOptions).Response;
       }
       catch (JsonException)
       {
-        await _dialogService.ShowOkDialog(AppResources.ErrorTitleString,
-          AppResources.ResponseDeserializationFailedErrorString);
+        if (!silent)
+        {
+          await _dialogService.ShowOkDialog(AppResources.ErrorTitleString,
+            AppResources.ResponseDeserializationFailedErrorString);
+        }
 
         return null;
       }
