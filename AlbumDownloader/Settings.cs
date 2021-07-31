@@ -5,8 +5,11 @@ namespace AlbumDownloader
 {
   internal class Settings
   {
-    public const string MainRegion = "ContentRegion";
+    public const string MainWindowRegion = "ContentRegion";
+    public const string MainPageRegion = "AlbumnPageContentRegion";
+    public const int SendRequestCancellationTimeoutSeconds = 10;
 
+    public int ImagesBatchSize { get; set; }
     public string AppID { get; set; }
     public string ApiVersion { get; set; }
     public string Token { get; set; }

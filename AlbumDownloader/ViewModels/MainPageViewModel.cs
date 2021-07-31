@@ -28,8 +28,6 @@ namespace AlbumDownloader.ViewModels
       FullName = $"{_settings.ProfileInfo.FirstName} {_settings.ProfileInfo.LastName}";
     }
 
-    public string ContentRegionName => "AlbumnPageContentRegion";
-
     public string FullName
     {
       get => _fullName;
@@ -42,7 +40,7 @@ namespace AlbumDownloader.ViewModels
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
-      _regionManager.RequestNavigate(ContentRegionName, nameof(AlbumsPage), new NavigationParameters
+      _regionManager.RequestNavigate(Settings.MainPageRegion, nameof(AlbumsPage), new NavigationParameters
       {
         { nameof(BusyIndicatorWrapperModel), BusyIndicatorWrapper }
       });
@@ -63,7 +61,7 @@ namespace AlbumDownloader.ViewModels
 
     private void ExecuteLogoutCommand()
     {
-      _regionManager.RequestNavigate(Settings.MainRegion, nameof(LoginPage));
+      _regionManager.RequestNavigate(Settings.MainWindowRegion, nameof(LoginPage));
     }
 
     private bool CanExecuteLogoutCommand()

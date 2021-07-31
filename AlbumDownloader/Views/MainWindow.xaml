@@ -8,5 +8,5 @@
     Width="525"
     Height="350"
     prism:ViewModelLocator.AutoWireViewModel="True">
-  <ContentControl prism:RegionManager.RegionName="{x:Static local:Settings.MainRegion}" />
+  <ContentControl prism:RegionManager.RegionName="{x:Static local:Settings.MainWindowRegion}" />
 </Window>
