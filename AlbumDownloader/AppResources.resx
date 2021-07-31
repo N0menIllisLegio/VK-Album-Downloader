@@ -120,11 +120,17 @@
   <data name="AuthorizationFailedErroString" xml:space="preserve">
     <value>Failed to authorize user! {0}</value>
   </data>
+  <data name="DownloadCompletedString" xml:space="preserve">
+    <value>Download completed successfully!</value>
+  </data>
   <data name="ErrorTitleString" xml:space="preserve">
     <value>Error!</value>
   </data>
   <data name="ReceivingProfileInfoFailedErrorString" xml:space="preserve">
     <value>Failed to receive profile info!</value>
+  </data>
+  <data name="RequestCanceledErrorString" xml:space="preserve">
+    <value>Sending request took too long ( &gt; {0}s). Aborting.</value>
   </data>
   <data name="RequestFailedErrorString" xml:space="preserve">
     <value>Request failed. {0}</value>
@@ -132,7 +138,16 @@
   <data name="ResponseDeserializationFailedErrorString" xml:space="preserve">
     <value>Failed to deserialize received response!</value>
   </data>
+  <data name="SuccessTitleString" xml:space="preserve">
+    <value>Success!</value>
+  </data>
   <data name="TokenExpiredErrorString" xml:space="preserve">
     <value>Session time has expired please log in anew!</value>
+  </data>
+  <data name="TotalPhotosDownloadProgressString" xml:space="preserve">
+    <value>Total photos download progress</value>
+  </data>
+  <data name="TotalProgressString" xml:space="preserve">
+    <value>Total Progress</value>
   </data>
 </root>

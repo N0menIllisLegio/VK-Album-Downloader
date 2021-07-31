@@ -70,6 +70,15 @@ namespace AlbumDownloader {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download completed successfully!.
+        /// </summary>
+        internal static string DownloadCompletedString {
+            get {
+                return ResourceManager.GetString("DownloadCompletedString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error!.
         /// </summary>
         internal static string ErrorTitleString {
@@ -84,6 +93,15 @@ namespace AlbumDownloader {
         internal static string ReceivingProfileInfoFailedErrorString {
             get {
                 return ResourceManager.GetString("ReceivingProfileInfoFailedErrorString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sending request took too long ( &gt; {0}s). Aborting..
+        /// </summary>
+        internal static string RequestCanceledErrorString {
+            get {
+                return ResourceManager.GetString("RequestCanceledErrorString", resourceCulture);
             }
         }
         
@@ -106,11 +124,38 @@ namespace AlbumDownloader {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Success!.
+        /// </summary>
+        internal static string SuccessTitleString {
+            get {
+                return ResourceManager.GetString("SuccessTitleString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Session time has expired please log in anew!.
         /// </summary>
         internal static string TokenExpiredErrorString {
             get {
                 return ResourceManager.GetString("TokenExpiredErrorString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total photos download progress.
+        /// </summary>
+        internal static string TotalPhotosDownloadProgressString {
+            get {
+                return ResourceManager.GetString("TotalPhotosDownloadProgressString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Progress.
+        /// </summary>
+        internal static string TotalProgressString {
+            get {
+                return ResourceManager.GetString("TotalProgressString", resourceCulture);
             }
         }
     }
