@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Windows;
 using AlbumDownloader.Services;
 using AlbumDownloader.ViewModels;
@@ -22,6 +23,7 @@ namespace AlbumDownloader
     {
       containerRegistry.RegisterSingleton<Settings>();
       containerRegistry.RegisterSingleton<VKApiRequestProvider>();
+      containerRegistry.RegisterSingleton<AlbumsDownloadService>();
       containerRegistry.Register<DialogService>();
       containerRegistry.Register<AccountService>();
 
@@ -31,6 +33,7 @@ namespace AlbumDownloader
       containerRegistry.RegisterForNavigation<LoginPage>(nameof(LoginPage));
       containerRegistry.RegisterForNavigation<MainPage>(nameof(MainPage));
       containerRegistry.RegisterForNavigation<AlbumsPage>(nameof(AlbumsPage));
+      containerRegistry.RegisterForNavigation<DownloadPage>(nameof(DownloadPage));
     }
 
     protected override void OnInitialized()
@@ -41,8 +44,9 @@ namespace AlbumDownloader
 
       settings.ApiVersion = ConfigurationManager.AppSettings.Get("VKApiVersion");
       settings.AppID = ConfigurationManager.AppSettings.Get("AppID");
+      settings.ImagesBatchSize = Int32.Parse(ConfigurationManager.AppSettings.Get("ImagesBatchSize"));
 
-      Container.Resolve<IRegionManager>().RequestNavigate(Settings.MainRegion, nameof(LoginPage));
+      Container.Resolve<IRegionManager>().RequestNavigate(Settings.MainWindowRegion, nameof(LoginPage));
     }
   }
 }
