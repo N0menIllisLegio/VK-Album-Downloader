@@ -1,9 +1,12 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using AlbumDownloader.Models;
 using AlbumDownloader.Models.ApiSchema;
 using AlbumDownloader.Services;
+using AlbumDownloader.Views;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -13,36 +16,32 @@ namespace AlbumDownloader.ViewModels
   internal class AlbumsPageViewModel : BindableBase, INavigationAware
   {
     private readonly VKApiRequestProvider _vkApiRequestProvider;
+    private readonly IRegionManager _regionManager;
 
     private DelegateCommand _downloadAlbums;
+    private DelegateCommand _refreshAlbums;
     private BusyIndicatorWrapperModel _busyIndicatorWrapper;
-    private ObservableCollection<AlbumModel> _albums;
+    private TrulyObservableCollection<AlbumModel> _albums;
 
-    public AlbumsPageViewModel(VKApiRequestProvider vkApiRequestProvider)
+    public AlbumsPageViewModel(VKApiRequestProvider vkApiRequestProvider, IRegionManager regionManager)
     {
-      Albums = new ObservableCollection<AlbumModel>();
+      Albums = new TrulyObservableCollection<AlbumModel>();
 
       _vkApiRequestProvider = vkApiRequestProvider ?? throw new ArgumentNullException(nameof(vkApiRequestProvider));
+      _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
     }
 
-    public ObservableCollection<AlbumModel> Albums
+    public TrulyObservableCollection<AlbumModel> Albums
     {
       get => _albums;
       set => SetProperty(ref _albums, value);
     }
 
-    public DelegateCommand DownloadAlbums =>
-        _downloadAlbums ?? (_downloadAlbums = new DelegateCommand(ExecuteDownloadAlbums, CanExecuteDownloadAlbums));
+    public DelegateCommand DownloadAlbumsCommand =>
+      _downloadAlbums ??= new DelegateCommand(ExecuteDownloadAlbumsCommand, CanExecuteDownloadAlbumsCommand);
 
-    void ExecuteDownloadAlbums()
-    {
-      _busyIndicatorWrapper.Busy = !_busyIndicatorWrapper.Busy;
-    }
-
-    bool CanExecuteDownloadAlbums()
-    {
-      return true; // _busyIndicatorWrapper.Busy;
-    }
+    public DelegateCommand RefreshAlbumsCommand =>
+      _refreshAlbums ??= new DelegateCommand(ExecuteRefreshAlbumsCommand, CanExecuteRefreshAlbumsCommand);
 
     public bool IsNavigationTarget(NavigationContext navigationContext)
     {
@@ -50,8 +49,7 @@ namespace AlbumDownloader.ViewModels
     }
 
     public void OnNavigatedFrom(NavigationContext navigationContext)
-    {
-    }
+    { }
 
     public void OnNavigatedTo(NavigationContext navigationContext)
     {
@@ -59,8 +57,33 @@ namespace AlbumDownloader.ViewModels
         .GetValue<BusyIndicatorWrapperModel>(nameof(BusyIndicatorWrapperModel))
           ?? throw new ArgumentException(nameof(_busyIndicatorWrapper));
 
+      _busyIndicatorWrapper.PropertyChanged += BusyIndicatorWrapper_PropertyChanged;
+
       _ = RefreshAlbums();
     }
+
+    private void ExecuteDownloadAlbumsCommand()
+    {
+      var selectedAlbums = Albums.Where(album => album.Selected).ToList();
+
+      _regionManager.RequestNavigate(Settings.MainPageRegion, nameof(DownloadPage), new NavigationParameters
+      {
+        { nameof(BusyIndicatorWrapperModel), _busyIndicatorWrapper },
+        { nameof(Albums), selectedAlbums }
+      });
+    }
+
+    private bool CanExecuteDownloadAlbumsCommand() =>
+      (!_busyIndicatorWrapper?.Busy ?? false)
+        && Albums.Count(album => album.Selected) > 0
+        && Albums.Where(album => album.Selected).Sum(album => album.Size) <= 10000;
+
+    private void ExecuteRefreshAlbumsCommand()
+    {
+      _ = RefreshAlbums();
+    }
+
+    private bool CanExecuteRefreshAlbumsCommand() => !_busyIndicatorWrapper?.Busy ?? false;
 
     private async Task RefreshAlbums()
     {
@@ -69,9 +92,27 @@ namespace AlbumDownloader.ViewModels
 
       var albums = await _vkApiRequestProvider.GetAlbums();
 
-      Albums = new ObservableCollection<AlbumModel>(albums);
+      if (Albums is not null)
+      {
+        Albums.CollectionChanged -= Albums_CollectionChanged;
+      }
+
+      Albums = new (albums);
+
+      Albums.CollectionChanged += Albums_CollectionChanged;
 
       _busyIndicatorWrapper.Busy = previousBusyValue;
+    }
+
+    private void BusyIndicatorWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      RefreshAlbumsCommand.RaiseCanExecuteChanged();
+      DownloadAlbumsCommand.RaiseCanExecuteChanged();
+    }
+
+    private void Albums_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+      DownloadAlbumsCommand.RaiseCanExecuteChanged();
     }
   }
 }

@@ -10,24 +10,59 @@
       <RowDefinition Height="50" />
     </Grid.RowDefinitions>
     <ListBox
+        Background="AliceBlue"
         ItemsSource="{Binding Albums}"
-        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+        SelectionMode="Multiple">
+      <ListBox.Resources>
+        <Style TargetType="ListBoxItem">
+          <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay}" />
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="ListBoxItem">
+                <Border SnapsToDevicePixels="true">
+                  <ContentPresenter />
+                </Border>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+        </Style>
+      </ListBox.Resources>
       <ListBox.ItemTemplate>
         <DataTemplate>
-          <StackPanel>
-            <Image
-                Width="200"
-                Height="200"
-                Source="{Binding ThumbnailUrl}" />
-            <DockPanel Margin="10 0">
-              <TextBlock
-                  Text="{Binding Title}"
-                  TextTrimming="CharacterEllipsis" />
-              <TextBlock
-                  HorizontalAlignment="Right"
-                  Text="{Binding Size}" />
-            </DockPanel>
-          </StackPanel>
+          <Border Margin="10">
+            <Border.Style>
+              <Style TargetType="Border">
+                <Style.Triggers>
+                  <DataTrigger
+                      Binding="{Binding Selected}"
+                      Value="True">
+                    <Setter Property="Background" Value="LightSteelBlue" />
+                    <Setter Property="CornerRadius" Value="5" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Border.Style>
+            <StackPanel>
+              <Image
+                  Width="200"
+                  Height="200"
+                  Margin="5"
+                  Source="{Binding ThumbnailUrl}" />
+              <DockPanel Margin="5 5">
+                <CheckBox
+                    Width="160"
+                    IsChecked="{Binding Selected}">
+                  <TextBlock
+                      Text="{Binding Title}"
+                      TextTrimming="CharacterEllipsis" />
+                </CheckBox>
+                <TextBlock
+                    HorizontalAlignment="Right"
+                    Text="{Binding Size}" />
+              </DockPanel>
+            </StackPanel>
+          </Border>
         </DataTemplate>
       </ListBox.ItemTemplate>
       <ListBox.ItemsPanel>
@@ -36,11 +71,21 @@
         </ItemsPanelTemplate>
       </ListBox.ItemsPanel>
     </ListBox>
-    <Button
+    <DockPanel
         Grid.Row="1"
         Margin="10"
-        Command="{Binding DownloadAlbums}">
-      Download Albums
-    </Button>
+        LastChildFill="True">
+      <Button
+          Command="{Binding RefreshAlbumsCommand}"
+          DockPanel.Dock="Right">
+        Refresh
+      </Button>
+      <Button
+          Margin="0 0 10 0"
+          Command="{Binding DownloadAlbumsCommand}"
+          DockPanel.Dock="Left">
+        Download Albums
+      </Button>
+    </DockPanel>
   </Grid>
 </UserControl>
