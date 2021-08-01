@@ -11,7 +11,7 @@
           VerticalAlignment="Center">
         <TextBlock Text="{Binding Title}" />
         <ProgressBar
-            Height="10"
+            Height="20"
             Margin="0 5"
             Maximum="{Binding Total}"
             Minimum="0"

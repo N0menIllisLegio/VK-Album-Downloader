@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.IO;
 using System.Windows;
 using AlbumDownloader.Services;
 using AlbumDownloader.ViewModels;
@@ -45,6 +46,13 @@ namespace AlbumDownloader
       settings.ApiVersion = ConfigurationManager.AppSettings.Get("VKApiVersion");
       settings.AppID = ConfigurationManager.AppSettings.Get("AppID");
       settings.ImagesBatchSize = Int32.Parse(ConfigurationManager.AppSettings.Get("ImagesBatchSize"));
+
+      Settings.WebViewUserDataFolder = Path.Combine(Directory.GetCurrentDirectory(), "BrowserData");
+
+      if (!Directory.Exists(Settings.WebViewUserDataFolder))
+      {
+        Directory.CreateDirectory(Settings.WebViewUserDataFolder);
+      }
 
       Container.Resolve<IRegionManager>().RequestNavigate(Settings.MainWindowRegion, nameof(LoginPage));
     }

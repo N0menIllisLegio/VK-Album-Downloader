@@ -9,6 +9,8 @@ namespace AlbumDownloader
     public const string MainPageRegion = "AlbumnPageContentRegion";
     public const int SendRequestCancellationTimeoutSeconds = 10;
 
+    public static string WebViewUserDataFolder { get; set; }
+
     public int ImagesBatchSize { get; set; }
     public string AppID { get; set; }
     public string ApiVersion { get; set; }
