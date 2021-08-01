@@ -32,10 +32,10 @@ namespace AlbumDownloader.Services
     public async Task<ServiceOperationResultModel<string>> DownloadAlbums(List<AlbumModel> albums,
       CancellationToken cancellationToken, DownloadProgressModel photosProgress = null)
     {
-      string downloadDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-        $"VK_Albums_{DateTime.Now:dd-MM-yyyy_HH-mm-ss}");
+      string downloadDirectory = $"VK_Albums_{DateTime.Now:dd-MM-yyyy_HH-mm-ss}";
+      string downloadDirectoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), downloadDirectory);
 
-      Directory.CreateDirectory(downloadDirectory);
+      Directory.CreateDirectory(downloadDirectoryPath);
 
       var blockOptions = new ExecutionDataflowBlockOptions { CancellationToken = cancellationToken };
       var photoUrlsExtractorBlock = new TransformManyBlock<PhotoUrlsExtractorBlockInputModel, PhotoDownloaderBlockInputModel>(ExtractPhotoUrls, blockOptions);
@@ -54,14 +54,16 @@ namespace AlbumDownloader.Services
         {
           Album = album,
           DownloadProgress = photosProgress,
-          DownloadDirectory = downloadDirectory,
+          DownloadDirectory = downloadDirectoryPath,
           LogLines = logLines
         });
       }
 
       photoUrlsExtractorBlock.Complete();
 
-      var result = ServiceOperationResultModel<string>.CompletedSuccessfully(null);
+      bool error = false;
+      var result = ServiceOperationResultModel<string>.CompletedSuccessfully(
+        String.Format(AppResources.DownloadCompletedString, downloadDirectory));
 
       try
       {
@@ -73,11 +75,22 @@ namespace AlbumDownloader.Services
         logLines.Add(exception.ToString());
 
         result = ServiceOperationResultModel<string>.Failure(exception.Message);
+
+        error = true;
       }
 
-      if (logLines.Count > 0)
+      string logFileName = "log.txt";
+
+      if (logLines.Count > 0 && error)
       {
-        await File.AppendAllLinesAsync(Path.Combine(downloadDirectory, "log.txt"), logLines);
+        await File.AppendAllLinesAsync(Path.Combine(downloadDirectoryPath, logFileName), logLines);
+      }
+      else if (logLines.Count > 0 && !error)
+      {
+        await File.AppendAllLinesAsync(Path.Combine(downloadDirectoryPath, logFileName), logLines);
+
+        result = ServiceOperationResultModel<string>.CompletedSuccessfully(
+          String.Format(AppResources.DownloadCompletedWithWarningString, downloadDirectory, logFileName));
       }
 
       return result;

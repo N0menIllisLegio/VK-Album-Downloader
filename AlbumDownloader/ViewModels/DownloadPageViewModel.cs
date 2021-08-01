@@ -85,7 +85,7 @@ namespace AlbumDownloader.ViewModels
 
       if (downloadResult.Success)
       {
-        await _dialogService.ShowOkDialog(AppResources.SuccessTitleString, AppResources.DownloadCompletedString);
+        await _dialogService.ShowOkDialog(AppResources.SuccessTitleString, downloadResult.Result);
       }
       else
       {

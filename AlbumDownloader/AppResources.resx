@@ -124,7 +124,10 @@
     <value>Failed to authorize user! {0}</value>
   </data>
   <data name="DownloadCompletedString" xml:space="preserve">
-    <value>Download completed successfully!</value>
+    <value>Download completed successfully! Photos placed on Desktop in {0} directory.</value>
+  </data>
+  <data name="DownloadCompletedWithWarningString" xml:space="preserve">
+    <value>Download completed with errors! Downloaded photos placed on Desktop in {0} directory. Check {1} file to identify what went wrong.</value>
   </data>
   <data name="ErrorTitleString" xml:space="preserve">
     <value>Error!</value>

@@ -79,11 +79,20 @@ namespace AlbumDownloader {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download completed successfully!.
+        ///   Looks up a localized string similar to Download completed successfully! Photos placed on Desktop in {0} directory..
         /// </summary>
         internal static string DownloadCompletedString {
             get {
                 return ResourceManager.GetString("DownloadCompletedString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download completed with errors! Downloaded photos placed on Desktop in {0} directory. Check {1} file to identify what went wrong..
+        /// </summary>
+        internal static string DownloadCompletedWithWarningString {
+            get {
+                return ResourceManager.GetString("DownloadCompletedWithWarningString", resourceCulture);
             }
         }
         
