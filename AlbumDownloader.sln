@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlbumDownloader", "AlbumDownloader\AlbumDownloader.csproj", "{464E4056-6D1E-4A61-B127-4016886A5C15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlbumDownloader", "AlbumDownloader\AlbumDownloader.csproj", "{464E4056-6D1E-4A61-B127-4016886A5C15}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Album-Downloader-Setup", "Album-Downloader-Setup\Album-Downloader-Setup.vdproj", "{B0760594-8161-4B96-B4E5-30FC5345D628}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,8 @@ Global
 		{464E4056-6D1E-4A61-B127-4016886A5C15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{464E4056-6D1E-4A61-B127-4016886A5C15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{464E4056-6D1E-4A61-B127-4016886A5C15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0760594-8161-4B96-B4E5-30FC5345D628}.Debug|Any CPU.ActiveCfg = Debug
+		{B0760594-8161-4B96-B4E5-30FC5345D628}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
