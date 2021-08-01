@@ -7,6 +7,7 @@
     Title="{Binding Title}"
     Width="525"
     Height="350"
+    Icon="pack://application:,,,/AlbumDownloader;component/image.ico"
     prism:ViewModelLocator.AutoWireViewModel="True">
   <ContentControl prism:RegionManager.RegionName="{x:Static local:Settings.MainWindowRegion}" />
 </Window>

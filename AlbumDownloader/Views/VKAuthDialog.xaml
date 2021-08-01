@@ -10,6 +10,7 @@
     prism:ViewModelLocator.AutoWireViewModel="True">
   <prism:Dialog.WindowStyle>
     <Style TargetType="Window">
+      <Setter Property="Icon" Value="pack://application:,,,/AlbumDownloader;component/image.ico" />
       <Setter Property="ShowInTaskbar" Value="False" />
       <Setter Property="SizeToContent" Value="WidthAndHeight" />
       <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterOwner" />
