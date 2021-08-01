@@ -7,7 +7,7 @@
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition />
-      <RowDefinition Height="50" />
+      <RowDefinition Height="60" />
     </Grid.RowDefinitions>
     <ListBox
         Background="AliceBlue"
@@ -84,7 +84,15 @@
           Margin="0 0 10 0"
           Command="{Binding DownloadAlbumsCommand}"
           DockPanel.Dock="Left">
-        Download Albums
+        <StackPanel VerticalAlignment="Stretch">
+          <TextBlock
+              HorizontalAlignment="Center"
+              Text="Download Albums" />
+          <TextBlock
+              HorizontalAlignment="Center"
+              FontSize="10"
+              Text="{Binding DownloadButtonCaption}" />
+        </StackPanel>
       </Button>
     </DockPanel>
   </Grid>

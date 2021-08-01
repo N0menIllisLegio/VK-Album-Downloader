@@ -43,6 +43,10 @@ namespace AlbumDownloader.ViewModels
     public DelegateCommand RefreshAlbumsCommand =>
       _refreshAlbums ??= new DelegateCommand(ExecuteRefreshAlbumsCommand, CanExecuteRefreshAlbumsCommand);
 
+    public string DownloadButtonCaption => $"Max amount of photos for download at once: {MaxDownloadPhotos}";
+
+    public int MaxDownloadPhotos => 10000;
+
     public bool IsNavigationTarget(NavigationContext navigationContext)
     {
       return true;
@@ -76,7 +80,7 @@ namespace AlbumDownloader.ViewModels
     private bool CanExecuteDownloadAlbumsCommand() =>
       (!_busyIndicatorWrapper?.Busy ?? false)
         && Albums.Count(album => album.Selected) > 0
-        && Albums.Where(album => album.Selected).Sum(album => album.Size) <= 10000;
+        && Albums.Where(album => album.Selected).Sum(album => album.Size) <= MaxDownloadPhotos;
 
     private void ExecuteRefreshAlbumsCommand()
     {
