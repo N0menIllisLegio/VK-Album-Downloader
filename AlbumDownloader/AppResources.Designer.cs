@@ -61,6 +61,15 @@ namespace AlbumDownloader {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please authorize in VK to proceed..
+        /// </summary>
+        internal static string AuthorizationDialogClosedByUserString {
+            get {
+                return ResourceManager.GetString("AuthorizationDialogClosedByUserString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to authorize user! {0}.
         /// </summary>
         internal static string AuthorizationFailedErroString {

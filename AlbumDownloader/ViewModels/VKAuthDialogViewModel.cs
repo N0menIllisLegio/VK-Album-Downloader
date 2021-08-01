@@ -13,7 +13,6 @@ namespace AlbumDownloader.ViewModels
 
     private const string _redirectUrl = "https://oauth.vk.com/blank.html";
 
-    private bool _canCloseDialog = false;
     private string _authUrl;
 
     public event Action<IDialogResult> RequestClose;
@@ -61,13 +60,12 @@ namespace AlbumDownloader.ViewModels
               });
           }
 
-          _canCloseDialog = true;
           RequestClose(dialogResult);
         }
       }
     }
 
-    public bool CanCloseDialog() => _canCloseDialog;
+    public bool CanCloseDialog() => true;
 
     public void OnDialogClosed()
     {

@@ -38,6 +38,14 @@ namespace AlbumDownloader.Services
             Message = result.Parameters.GetValue<string>("Error")
           });
         }
+        else if (result.Result == ButtonResult.None)
+        {
+          authorizationDialogClosed.SetResult(new AuthorizationDialogResultModel
+          {
+            Success = false,
+            Message = AppResources.AuthorizationDialogClosedByUserString
+          });
+        }
         else
         {
           authorizationDialogClosed.SetResult(new AuthorizationDialogResultModel
