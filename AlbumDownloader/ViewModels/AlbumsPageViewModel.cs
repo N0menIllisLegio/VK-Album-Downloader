@@ -90,18 +90,24 @@ namespace AlbumDownloader.ViewModels
       var previousBusyValue = _busyIndicatorWrapper.Busy;
       _busyIndicatorWrapper.Busy = true;
 
-      var albums = await _vkApiRequestProvider.GetAlbums();
-
       if (Albums is not null)
       {
         Albums.CollectionChanged -= Albums_CollectionChanged;
       }
 
-      Albums = new (albums);
-
-      Albums.CollectionChanged += Albums_CollectionChanged;
+      var albums = await _vkApiRequestProvider.GetAlbums();
 
       _busyIndicatorWrapper.Busy = previousBusyValue;
+
+      if (albums is not null)
+      {
+        Albums = new(albums);
+        Albums.CollectionChanged += Albums_CollectionChanged;
+      }
+      else
+      {
+        _regionManager.RequestNavigate(Settings.MainWindowRegion, nameof(LoginPage));
+      }
     }
 
     private void BusyIndicatorWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e)

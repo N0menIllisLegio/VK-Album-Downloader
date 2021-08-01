@@ -10,7 +10,6 @@ using System.Text.Json.Serialization;
 
 namespace AlbumDownloader.Services
 {
-  // TODO handle null results eg errors
   internal class VKApiRequestProvider: IDisposable
   {
     private readonly HttpClient _httpClient;
