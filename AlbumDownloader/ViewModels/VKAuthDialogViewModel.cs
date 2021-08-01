@@ -17,6 +17,7 @@ namespace AlbumDownloader.ViewModels
     private string _authUrl;
 
     public event Action<IDialogResult> RequestClose;
+    public event Action OnLeavingAuthDialog;
 
     public string Title => "VK Auth";
 
@@ -69,7 +70,9 @@ namespace AlbumDownloader.ViewModels
     public bool CanCloseDialog() => _canCloseDialog;
 
     public void OnDialogClosed()
-    { }
+    {
+      OnLeavingAuthDialog?.Invoke();
+    }
 
     public void OnDialogOpened(IDialogParameters parameters)
     {

@@ -16,7 +16,9 @@
     </Style>
   </prism:Dialog.WindowStyle>
   <DockPanel>
-    <wv2:WebView2 Source="{Binding AuthUrl, Mode=TwoWay}">
+    <wv2:WebView2
+        Name="webView2"
+        Source="{Binding AuthUrl, Mode=TwoWay}">
       <wv2:WebView2.CreationProperties>
         <wv2:CoreWebView2CreationProperties UserDataFolder="{x:Static local:Settings.WebViewUserDataFolder}" />
       </wv2:WebView2.CreationProperties>
